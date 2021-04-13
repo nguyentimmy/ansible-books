@@ -1,0 +1,32 @@
+---
+# Installing Audit Beat 
+- name: Installing Audit beat 
+  apt:
+   name: auditbeat 
+   update_cache: yes 
+
+- name: Starting audit beat 
+  service:
+   name: auditbeat 
+   state: started 
+
+# Installing Auditd, needs auditd to allow logs 
+- name: Installing Auditd 
+  apt:
+   name: auditd 
+   update_cache: yes
+
+- name: Starting Auditd
+  service: 
+   name: auditd 
+   state: started 
+
+
+
+# ---------------------------- RANDOM NOTES TO MYSELF -----------------------------
+# nano /etc/auditbeat/auditbeat.yml
+# http.enabled: true                                                                                                      
+# http.port: 5068     
+
+#- name: Setting up the dashboards 
+#  command: auditbeat setup 

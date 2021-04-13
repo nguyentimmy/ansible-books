@@ -1,0 +1,37 @@
+---
+- name:  "STARTING UP ELK STACK + BEATS"
+  hosts: elk
+  become: true
+
+  tasks:
+   - name: Starting "ELASTICSEARCH"
+     service:
+      name: elasticsearch             
+      state: started 
+
+   - name: Starting "LOGSTASH"
+     service:            
+      name: logstash               
+      state: started 
+
+   - name: Starting "KIBANA"
+     service:            
+      name: kibana               
+      state: started 
+    
+   - name: Starting "FILEBEAT"
+     service:            
+      name: filebeat               
+      state: started 
+
+   - name: Starting "PACKETBEAT"
+     service:            
+      name: packetbeat               
+      state: started
+
+   - name: Starting "AUDITBEAT"
+     service: 
+      name: auditbeat 
+      state: started 
+
+# To see if kibana is up and running: curl http://localhost:9200/_cluster/health?pretty   

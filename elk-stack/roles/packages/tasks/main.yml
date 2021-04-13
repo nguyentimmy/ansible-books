@@ -1,0 +1,36 @@
+---
+# Updating APT manager 
+- name: Update APT package manager repositories cache
+  apt:
+    update_cache: yes
+
+# Installing JDK 
+- name: Install OpenJDK Java
+  become: yes
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    default-jdk
+
+# Installing GNUPG
+- name: 
+  apt:
+    name: gnupg 
+    update_cache: yes 
+
+# Installing apache2
+- name: Install apache2 with apt
+  apt:
+   name: apache2
+   update_cache: yes
+ 
+- name: Starting apache2
+  service:
+   name: apache2
+   state: started
+   
+
+
+  
+    

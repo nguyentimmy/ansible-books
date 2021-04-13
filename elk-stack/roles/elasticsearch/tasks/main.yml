@@ -1,0 +1,58 @@
+---
+# Adding the GPG key
+- name:  Add Elasticsearch apt key
+  apt_key:
+   url: "https://packages.elastic.co/GPG-KEY-elasticsearch"
+   state: present
+
+# Installing APT repo
+- name:  Install APT repository
+  apt:
+    name: apt-transport-https
+    state: present
+
+# Add the Elasticsearch apt repo
+- name:  Adding Elasticsearch repo
+  apt_repository:
+   repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
+   state: present
+
+# Installing Elasticsearch
+- name:  Install Elasticsearch
+  apt:
+   name: elasticsearch
+   update_cache: yes
+
+# Updating Elasticsearch config file to allow access and set to 127.0.0.1, 0.0.0.0 is optional  
+- name:  Allowing open outside access 
+  lineinfile:
+   destfile: /etc/elasticsearch/elasticsearch.yml
+   regexp: 'network.host:'
+   line: 'network.host: 0.0.0.0'
+
+# Updating Elasticsearch port in config file 
+- name:  Updating the port 9200 to connect to elasticsearch
+  lineinfile:
+   destfile: /etc/elasticsearch/elasticsearch.yml
+   regexp: 'http.port:'
+   line: 'http.port: 9200'
+
+# Allow your IP to be accessed 
+- name:  Allowing access from default IP address in your machine
+  lineinfile:
+   destfile: /etc/elasticsearch/elasticsearch.yml
+   regexp: 'cluster.initial_master_nodes:'
+   line: 'cluster.initial_master_nodes: ["{{ ansible_default_ipv4.address }}"]'
+
+
+
+# ----------------------- SINGLE NODE OPTIONAL ----------------------- 
+
+# [ SINGLE NODE MODE ]
+#- name: Updating the config file to single node
+#  lineinfile:
+#   destfile: /etc/elasticsearch/elasticsearch.yml
+#   line: 'discovery.type: single-node'
+#   create: yes 
+
+# *** YOU CAN ONLY USE CLUSTER NODE OR SINGLE NODE, COMMENT AND UNCOMMENT YOUR PREFERNCE ***

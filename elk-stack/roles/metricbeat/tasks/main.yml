@@ -1,0 +1,21 @@
+---
+- name: Installing Metricbeat with apt
+  apt:
+   name: metricbeat
+   update_cache: yes
+
+- name: Starting Metricbeat
+  service:
+   name: metricbeat
+   state: started
+
+- name: Enabling system module
+  command: metricbeat modules enable elasticsearch-xpack beat-xpack kibana-xpack
+
+
+# ---------------------------- RANDOM NOTES TO MYSELF -----------------------------
+#- name: Setting up dashboards 
+#  command: metricbeat setup dashboards 
+
+
+

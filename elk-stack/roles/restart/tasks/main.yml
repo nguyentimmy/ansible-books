@@ -1,0 +1,30 @@
+---
+- name: Restart elasticservice
+  service:
+    name: elasticsearch
+    state: restarted
+
+- name: Restart logstash
+  service:
+    name: logstash
+    state: restarted
+
+- name: Restart kibana
+  service:
+    name: kibana
+    state: restarted
+
+- name: Restart metricbeat
+  service:
+    name: metricbeat
+    state: restarted
+
+- name: Restart auditbeat
+  service:
+    name: auditbeat
+    state: restarted
+
+- name: Restart packetbeat
+  service:
+    name: packetbeat
+    state: restarted

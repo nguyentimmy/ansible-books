@@ -1,0 +1,23 @@
+---
+- name: Install filebeat with apt
+  apt:
+   name: filebeat
+   update_cache: yes
+
+- name: Starting filebeat
+  service:
+   name: filebeat
+   state: started
+
+- name: enable and configure system module
+  command:  filebeat modules enable system
+
+
+# ---------------------------- RANDOM NOTES TO MYSELF -----------------------------
+
+# nano /etc/filebeat/filebeat.yml 
+# http.enabled: true         
+# http.port: 5067
+
+#- name: Setting up filebeat dashboard
+#  command: filebeat setup

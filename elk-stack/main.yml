@@ -1,0 +1,83 @@
+---
+- hosts: localhost
+  become: true
+  roles:
+  - { role: packages }
+  - { role: elasticsearch }
+  - { role: logstash }
+  - { role: kibana }
+  - { role: metricbeat }
+  - { role: filebeat }
+  - { role: packetbeat }
+  - { role: auditbeat }
+  - { role: restart }
+
+
+
+# ---------------------------- X-PACK SECURITY SETUP NOTES ----------------------------- #
+
+
+##############################
+# 1.) ENABLE XPACK SECURITY  #
+##############################
+
+# READ: Must disable cluster node modules
+# EDIT: nano /etc/elasticsearch/elasticsearch.yml
+# APPEND: discovery.type: single-node
+# APPEND: xpack.security.enabled: true
+
+############################
+# 2.) GENERATE A PASSWORD  #
+############################
+
+# READ: Execute the script and remember or save the passwords! 
+# SCRIPT: /usr/share/elasticsearch/bin/elasticsearch-setup-passwords [auto/interactive mode] 
+
+###########################
+# 3.) CONFIGURE YML FILES #
+###########################
+
+# EDIT: nano /etc/filebeat/filebeat.yml
+# APPEND: http.enabled: true                                                                                                                        
+# APPEND: http.port: 5067
+# UNCOMMENT: http
+# CHANGE: username: "elastic" & password: "<insert-password>"
+
+# EDIT: nano /etc/auditbeat/auditbeat.yml
+# APPEND: http.enabled: true                                                                                                      
+# APPEND: http.port: 5068 
+# CHANGE: username: "elastic" & password: "<insert-password>"
+
+# EDIT: nano /etc/packetbeat/packetbeat.yml
+# APPEND: http.enabled: true                                                                                                      
+# APPEND: http.port: 5070 
+# CHANGE: username: "elastic" & password: "<insert-password>"
+# EXECUTE: packetbeat setup dashboard
+
+############################################
+# 4.) CONFIGURE AND ENABLE XPACK SECURITY  #
+############################################
+
+# EXECUTE: metricbeat modules enable elasticsearch-xpack 
+# EDIT: nano /etc/metricbeat/modules.d/elasticsearch-xpack.yml 
+# CHANGE: username: "remote_monitoring_user" & password: <insert-passswd>
+
+# EXECUTE: metricbeat modules enable metricbeat-xpack 
+# EDIT: nano /etc/metricbeat/modules.d/kibana-xpack.yml 
+# CHANGE: username: "remote_monitoring_user" & password: <insert-passswd>
+
+# EXECUTE: metricbeat modules enable beat-xpack 
+# EDIT: nano /etc/metricbeat/modules.d/beat-xpack.yml  
+# CHANGE: hosts: ["http://localhost:5067", "http//localhost:5068" ,"http://localhost:5070"]                                      
+# CHANGE: username: "beats_system" & password: <insert-passswd>
+
+
+#############################
+# 5.) TESTING CONFIGURATION #
+#############################
+
+# EXECUTE: curl -XGET -u elastic:<password> http://localhost:9200/_cluster/health?pretty
+# packetbeat test output && packetbeat setup dashboards
+# filebeat test output && filebeat setup dashboards
+# auditbeat test output && auditbeat setup dashboards
+# metricbeat test output && metricbeat setup dashboards

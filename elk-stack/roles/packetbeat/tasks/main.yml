@@ -1,0 +1,10 @@
+---
+- name: Install packetbeat with apt 
+  apt:
+   name: packetbeat
+   update_cache: yes
+
+- name: Starting packetbeat
+  service:
+   name: packetbeat
+   state: started
