@@ -1,11 +1,9 @@
 ---
-# Updating APT manager 
-- name: Update APT package manager repositories cache
+- name: Update APT package w/ manager repo cache
   apt:
     update_cache: yes
 
-# Installing JDK 
-- name: Install OpenJDK Java
+- name: Installing Default OpenJDK Java
   become: yes
   apt:
     name: "{{ item }}"
@@ -13,13 +11,11 @@
   with_items:
     default-jdk
 
-# Installing GNUPG
-- name: 
+- name: Installing GNUPG
   apt:
     name: gnupg 
     update_cache: yes 
 
-# Installing apache2
 - name: Install apache2 with apt
   apt:
    name: apache2
