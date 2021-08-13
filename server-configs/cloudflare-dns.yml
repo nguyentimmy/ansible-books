@@ -1,0 +1,49 @@
+---
+- hosts: localhost
+  become: true
+  vars:
+   pkg:
+    - resolvconf
+    - network-manager
+  tasks:
+
+   - name: Installing resolvconf
+     apt:
+      name: '{{ pkg }}'
+      state: present
+
+   - name: Updating /etc/resolv.conf 
+     lineinfile:
+        destfile: /etc/resolve.conf
+        regexp: 'nameserver'
+        line: 'nameserver 1.1.1.1 1.0.0.1'
+
+   - name: Updating /etc/resolvconf/resolv.conf.d/base
+     lineinfile:
+        destfile: /etc/resolvconf/resolv.conf.d/base
+        line: 'nameserver 1.1.1.1 1.0.0.1'
+        create: yes
+
+   - name: Updating
+     lineinfile:
+        destfile: /home/tummy/dns/interface
+        regexp: 'dns-nameservers'
+        line: 'dns-nameservers 1.1.1.1 1.0.0.1'
+
+   - name: Restarting Network Manager
+     service:
+        name: NetworkManager
+        state: restarted
+
+# READ ME!
+# 1. If you configured it correctly, you should NOT see your default gateway (EX: 192.168.1.1) on the /etc/resolv.conf file
+# 2. Best to manually configure it on these file because NetworkManager will automatically reset back to the default gateway 
+# 3. I prefer using cloud flare (1.1.1.1, 1.0.0.1) because it resolves the domain/IP faster than google DNS server and your ISP DNS server. 
+# 4. Using your ISP DNS server can leak your public IP when surfing the network. 
+# 5. Your own ISP can store your data and track browsing activity
+# 6. A VPN won't change your DNS, in most cases an ISP can go through your history so it's best to change your DNS to add privacy. 
+# 7. Cloudflare DNS provides privacy and does not store your data.
+# 8. By default, your DNS server will be routed to the default gateway (check route or arp -a to see default gateway)
+# 9. Check to see if your DNS have changed on https://www.dnsleaktest.com/ (Should say cloudflare after the test)
+
+
