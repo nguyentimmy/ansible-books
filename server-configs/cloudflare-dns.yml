@@ -1,10 +1,11 @@
 ---
-- hosts: localhost
+- hosts: webservers
   become: true
   vars:
    pkg:
     - resolvconf
     - network-manager
+
   tasks:
 
    - name: Installing resolvconf
@@ -12,28 +13,28 @@
       name: '{{ pkg }}'
       state: present
 
-   - name: Updating /etc/resolv.conf 
+   - name: Updating /etc/resolv.conf
      lineinfile:
         destfile: /etc/resolv.conf
         regexp: 'nameserver'
-        line: 'nameserver 1.1.1.1 1.0.0.1'
+        line: 'nameserver 1.1.1.1'
 
    - name: Updating /etc/resolvconf/resolv.conf.d/base
      lineinfile:
         destfile: /etc/resolvconf/resolv.conf.d/base
-        line: 'nameserver 1.1.1.1 1.0.0.1'
+        line: 'nameserver 1.1.1.1'
         create: yes
 
-   - name: Updating
+   - name: Updating shit
      lineinfile:
-        destfile: /home/tummy/dns/interface
-        regexp: 'dns-nameservers'
-        line: 'dns-nameservers 1.1.1.1 1.0.0.1'
+        destfile: /etc/network/interfaces
+        line: 'dns-nameservers 1.1.1.1'
+        create: yes
 
    - name: Restarting Network Manager
      service:
         name: NetworkManager
-        state: restarted
+        state: started
 
 # READ ME!
 # 1. If you configured it correctly, you should NOT see your default gateway (EX: 192.168.1.1) on the /etc/resolv.conf file
@@ -45,5 +46,4 @@
 # 7. Cloudflare DNS provides privacy and does not store your data.
 # 8. By default, your DNS server will be routed to the default gateway (check route or arp -a to see default gateway)
 # 9. Check to see if your DNS have changed on https://www.dnsleaktest.com/ (Should say cloudflare after the test)
-
 
