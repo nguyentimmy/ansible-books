@@ -25,7 +25,7 @@
         line: 'nameserver 1.1.1.1'
         create: yes
 
-   - name: Updating shit
+   - name: Updating the interface
      lineinfile:
         destfile: /etc/network/interfaces
         line: 'dns-nameservers 1.1.1.1'
