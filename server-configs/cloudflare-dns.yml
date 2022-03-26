@@ -14,7 +14,7 @@
 
    - name: Updating /etc/resolv.conf 
      lineinfile:
-        destfile: /etc/resolve.conf
+        destfile: /etc/resolv.conf
         regexp: 'nameserver'
         line: 'nameserver 1.1.1.1 1.0.0.1'
 
